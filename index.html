@@ -10,32 +10,22 @@
         :root { --primary-red: #E30613; --dark: #1a1a1a; --gray: #f4f4f4; }
         * { font-family: 'Kanit', sans-serif; box-sizing: border-box; }
         body { background-color: var(--gray); margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-        
-        .container { background: white; width: 100%; max-width: 600px; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 8px solid var(--primary-red); position: relative; }
+        .container { background: white; width: 100%; max-width: 600px; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 8px solid var(--primary-red); }
         .logo-section { text-align: center; margin-bottom: 20px; }
-        .logo-section img { max-width: 150px; min-height: 50px; }
+        .logo-section img { max-width: 150px; min-height: 50px; object-fit: contain; }
         .company-title { text-align: center; font-size: 1.5rem; font-weight: 600; color: var(--dark); margin-bottom: 30px; }
-
-        /* หน้าแรก (Landing) */
         .landing-menu { display: flex; flex-direction: column; gap: 15px; }
-        .menu-btn { padding: 20px; font-size: 1.2rem; font-weight: 600; border: 2px solid var(--primary-red); border-radius: 10px; background: white; color: var(--primary-red); cursor: pointer; transition: 0.3s; text-align: center; }
+        .menu-btn { padding: 20px; font-size: 1.1rem; font-weight: 600; border: 2px solid var(--primary-red); border-radius: 10px; background: white; color: var(--primary-red); cursor: pointer; transition: 0.3s; }
         .menu-btn:hover { background: var(--primary-red); color: white; transform: translateY(-3px); }
-
-        /* หน้าฟอร์ม */
         .hidden { display: none; }
         .form-header { display: flex; align-items: center; margin-bottom: 25px; gap: 10px; }
-        .back-btn { background: #eee; border: none; padding: 5px 15px; border-radius: 5px; cursor: pointer; font-size: 0.9rem; }
-        .back-btn:hover { background: #ddd; }
-
-        .section-title { background: var(--dark); color: white; padding: 8px 15px; border-radius: 5px; margin: 25px 0 15px 0; font-size: 1rem; }
+        .back-btn { background: #eee; border: none; padding: 5px 15px; border-radius: 5px; cursor: pointer; }
         .form-group { margin-bottom: 20px; }
         label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--dark); }
         input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; }
         textarea { height: 100px; resize: vertical; }
-
         .submit-btn { width: 100%; padding: 15px; background: var(--primary-red); color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: 0.3s; margin-top: 20px; }
         .submit-btn:hover { background: #b3050f; }
-
         #adminBtn { position: fixed; bottom: 10px; right: 10px; opacity: 0.1; border: none; background: none; cursor: pointer; font-size: 10px; }
         #adminBtn:hover { opacity: 1; color: var(--primary-red); }
     </style>
@@ -44,43 +34,36 @@
 
 <div class="container">
     <div class="logo-section">
-        <!-- โลโก้จะดึงจาก Settings อัตโนมัติ -->
-        <img id="mainLogo" src="" alt="Loading Logo...">
+        <!-- ใส่ ID mainLogo เพื่อรอรับลิงก์จาก Sheets -->
+        <img id="mainLogo" src="https://i.ibb.co/2xYmDGM/logo-square.jpg" alt="Logo">
     </div>
     <div id="compName" class="company-title">DataCube</div>
 
-    <!-- ส่วนที่ 1: หน้าเลือกเมนู -->
     <div id="landingPage" class="landing-menu">
         <div style="text-align: center; margin-bottom: 10px; color: #666;">กรุณาเลือกประเภทการประเมิน</div>
         <button class="menu-btn" onclick="startApp('self')">ประเมินตนเอง (Self-Evaluation)</button>
         <button class="menu-btn" onclick="startApp('client')">ประเมินโดยลูกค้า (Client Evaluation)</button>
     </div>
 
-    <!-- ส่วนที่ 2: หน้าฟอร์ม -->
     <div id="formPage" class="hidden">
         <div class="form-header">
             <button class="back-btn" onclick="goHome()">← ย้อนกลับ</button>
             <h3 id="formTitle" style="margin:0; color: var(--primary-red);"></h3>
         </div>
-
         <form id="evalForm">
-            <div style="display: grid; grid-template-columns: 1fr; gap: 15px; margin-bottom: 20px;">
-                <div class="form-group">
-                    <label>ชื่อผู้ประเมิน</label>
-                    <input type="text" id="evaluator" placeholder="กรอกชื่อ-นามสกุล ของท่าน" required>
-                </div>
-                <div class="form-group" id="empSelectArea">
-                    <label>พนักงานที่ต้องการประเมิน (สำหรับลูกค้า)</label>
-                    <select id="employee">
-                        <option value="ประเมินตนเอง">-- ประเมินตนเอง --</option>
-                        <option value="พนักงาน A">พนักงาน A</option>
-                        <option value="พนักงาน B">พนักงาน B</option>
-                    </select>
-                </div>
+            <div class="form-group">
+                <label>ชื่อผู้ประเมิน</label>
+                <input type="text" id="evaluator" placeholder="กรอกชื่อ-นามสกุล ของท่าน" required>
             </div>
-
+            <div class="form-group" id="empSelectArea">
+                <label>พนักงานที่ต้องการประเมิน</label>
+                <select id="employee">
+                    <option value="ประเมินตนเอง">-- ประเมินตนเอง --</option>
+                    <option value="พนักงาน A">พนักงาน A</option>
+                    <option value="พนักงาน B">พนักงาน B</option>
+                </select>
+            </div>
             <div id="questionArea"></div>
-
             <button type="submit" id="saveBtn" class="submit-btn">ส่งผลการประเมิน</button>
         </form>
     </div>
@@ -89,39 +72,24 @@
 <button id="adminBtn" onclick="openAdmin()">Admin Config</button>
 
 <script>
+    // ** เปลี่ยน URL ตรงนี้เป็น Web App URL ล่าสุดของคุณ **
     const scriptURL = 'https://script.google.com/macros/s/AKfycbwhQyaD82Ywe54ewtNM5ZIfRp0umB54N-5CYorvMoxAXUW_TuxO_MXS1YsqbSDVuqSA/exec';
     let currentMode = '';
 
-    // โหลด Settings
-    fetch(scriptURL).then(res => res.json()).then(data => {
-        if(data.logo) document.getElementById('mainLogo').src = data.logo;
-        if(data.company) {
-            document.getElementById('compName').innerText = data.company;
-            document.querySelectorAll('.company-title').forEach(el => el.innerText = data.company);
-        }
-    });
+    // โหลดโลโก้และชื่อบริษัทเมื่อเปิดหน้าเว็บ
+    window.onload = () => {
+        fetch(scriptURL)
+        .then(res => res.json())
+        .then(data => {
+            if(data.logo) document.getElementById('mainLogo').src = data.logo;
+            if(data.company) document.getElementById('compName').innerText = data.company;
+        })
+        .catch(err => console.error("Logo load error:", err));
+    };
 
     const questions = {
-        self: [
-            "1. ความสำเร็จที่ภาคภูมิใจที่สุดในการทำงานช่วงที่ผ่านมาคืออะไร?",
-            "2. จุดแข็งที่คุณนำมาใช้ในการทำงานอย่างเต็มที่คืออะไร?",
-            "3. ส่วนใดของงานที่คุณรู้สึกว่ายังทำได้ไม่ดีพอ และต้องการปรับปรุง?",
-            "4. คุณได้เรียนรู้ทักษะใหม่ๆ หรือพัฒนาตนเองในด้านใดบ้าง?",
-            "5. หากต้องให้คะแนนความรับผิดชอบตนเอง (1-10) คุณให้เท่าไหร่ เพราะเหตุใด?",
-            "6. อุปสรรคสำคัญในการทำงานที่ต้องการให้ทีมช่วยเหลือคืออะไร?",
-            "7. เป้าหมายในการทำงานที่คุณต้องการบรรลุในระยะถัดไปคืออะไร?",
-            "8. ข้อเสนอแนะเพื่อพัฒนาบรรยากาศการทำงานในทีม?"
-        ],
-        client: [
-            "1. พนักงาน/ทีมงาน มีความเข้าใจในความต้องการของท่านมากน้อยเพียงใด?",
-            "2. ความรวดเร็วและคุณภาพในการตอบสนองต่อปัญหาเป็นอย่างไร?",
-            "3. ผลงานที่ได้รับตรงตามมาตรฐานและกำหนดการที่ตกลงกันไว้หรือไม่?",
-            "4. การสื่อสารและการรายงานความคืบหน้ามีความชัดเจนหรือไม่?",
-            "5. ท่านประทับใจในทักษะด้านใดของพนักงานรายนี้มากที่สุด?",
-            "6. มีจุดใดที่ท่านอยากให้พนักงานปรับปรุงเป็นพิเศษหรือไม่?",
-            "7. หากมีโปรเจคในอนาคต ท่านยังไว้วางใจให้พนักงานรายนี้ดูแลหรือไม่?",
-            "8. ข้อเสนอแนะอื่นๆ เพื่อการให้บริการที่ดีขึ้นในครั้งถัดไป?"
-        ]
+        self: ["ความสำเร็จที่ภูมิใจที่สุด?","จุดแข็งที่นำมาใช้?","ส่วนที่ควรปรับปรุง?","ทักษะที่ได้เรียนรู้ใหม่?","คะแนนความรับผิดชอบ (1-10)?","อุปสรรคที่พบ?","เป้าหมายระยะถัดไป?","ข้อเสนอแนะเพื่อทีม?"],
+        client: ["ความเข้าใจในความต้องการ?","ความรวดเร็วในการตอบสนอง?","คุณภาพงานตรงกำหนดหรือไม่?","การสื่อสารชัดเจนหรือไม่?","ทักษะที่ประทับใจที่สุด?","จุดที่อยากให้ปรับปรุง?","ความไว้วางใจในอนาคต?","ข้อเสนอแนะเพิ่มเติม?"]
     };
 
     function startApp(mode) {
@@ -130,33 +98,19 @@
         document.getElementById('formPage').classList.remove('hidden');
         document.getElementById('formTitle').innerText = mode === 'self' ? 'แบบประเมินตนเอง' : 'แบบประเมินโดยลูกค้า';
         
-        // จัดการส่วนเลือกพนักงาน
-        const empSelect = document.getElementById('employee');
-        if(mode === 'self') {
-            empSelect.value = "ประเมินตนเอง";
-            document.getElementById('empSelectArea').style.display = 'none';
-        } else {
-            empSelect.value = "";
-            document.getElementById('empSelectArea').style.display = 'block';
-            empSelect.required = true;
-        }
+        document.getElementById('empSelectArea').style.display = mode === 'self' ? 'none' : 'block';
+        document.getElementById('employee').value = mode === 'self' ? 'ประเมินตนเอง' : '';
 
-        // สร้างคำถาม
         const qArea = document.getElementById('questionArea');
         qArea.innerHTML = '';
         questions[mode].forEach((q, i) => {
-            qArea.innerHTML += `
-                <div class="form-group">
-                    <label>${q}</label>
-                    <textarea id="q${i+1}" required placeholder="ระบุรายละเอียด..."></textarea>
-                </div>`;
+            qArea.innerHTML += `<div class="form-group"><label>${i+1}. ${q}</label><textarea id="q${i+1}" required></textarea></div>`;
         });
     }
 
     function goHome() {
         document.getElementById('landingPage').classList.remove('hidden');
         document.getElementById('formPage').classList.add('hidden');
-        document.getElementById('evalForm').reset();
     }
 
     document.getElementById('evalForm').addEventListener('submit', e => {
@@ -173,20 +127,18 @@
 
         fetch(scriptURL, { method: 'POST', body: JSON.stringify(body) })
         .then(() => {
-            Swal.fire({ icon: 'success', title: 'บันทึกสำเร็จ!', text: 'ขอบคุณที่ร่วมทำแบบประเมินครับ', confirmButtonColor: '#E30613' })
-            .then(() => goHome());
+            Swal.fire({ icon: 'success', title: 'บันทึกสำเร็จ!', text: 'ขอบคุณครับ' }).then(() => location.reload());
         });
     });
 
     async function openAdmin() {
         const { value: formValues } = await Swal.fire({
-            title: 'Admin Settings',
-            html: '<input id="sw-logo" class="swal2-input" placeholder="Logo URL"><input id="sw-comp" class="swal2-input" placeholder="Company Name">',
+            title: 'ตั้งค่าระบบ',
+            html: '<input id="sw-logo" class="swal2-input" placeholder="ลิงก์โลโก้"><input id="sw-comp" class="swal2-input" placeholder="ชื่อบริษัท">',
             preConfirm: () => ({ logo: document.getElementById('sw-logo').value, company: document.getElementById('sw-comp').value })
         });
         if (formValues) {
-            fetch(scriptURL, { method: 'POST', body: JSON.stringify({ action: "updateSettings", ...formValues }) })
-            .then(() => location.reload());
+            fetch(scriptURL, { method: 'POST', body: JSON.stringify({ action: "updateSettings", ...formValues }) }).then(() => location.reload());
         }
     }
 </script>
