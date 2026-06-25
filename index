@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Evaluation - DataCube</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-red: #E30613;
+            --dark-black: #1a1a1a;
+            --soft-white: #ffffff;
+            --gray-bg: #f4f4f4;
+        }
+
+        body {
+            font-family: 'Kanit', sans-serif;
+            background-color: var(--gray-bg);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: var(--soft-white);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 500px;
+            border-top: 8px solid var(--primary-red);
+        }
+
+        .logo-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-section img {
+            max-width: 150px; /* ใส่ URL โลโก้ของคุณตรงนี้ */
+        }
+
+        h2 {
+            color: var(--dark-black);
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        p.subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-black);
+        }
+
+        input[type="text"], select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-family: 'Kanit', sans-serif;
+        }
+
+        textarea {
+            resize: vertical;
+            height: 100px;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background-color: var(--primary-red);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background-color: #b3050f;
+        }
+
+        #status {
+            text-align: center;
+            margin-top: 15px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="logo-section">
+        <!-- ใส่ลิงก์รูปโลโก้บริษัทของคุณที่นี่ -->
+        <img src="https://i.ibb.co/3Y0M2p5/datacube-logo.png" alt="DataCube Logo">
+    </div>
+
+    <h2>แบบประเมินพนักงาน</h2>
+    <p class="subtitle">Turning Data Into Real Business Value</p>
+
+    <form id="evalForm">
+        <div class="form-group">
+            <label>ชื่อผู้ประเมิน</label>
+            <input type="text" id="evaluator" placeholder="ระบุชื่อของคุณ" required>
+        </div>
+
+        <div class="form-group">
+            <label>ชื่อพนักงานที่ถูกประเมิน</label>
+            <select id="employee" required>
+                <option value="">-- เลือกพนักงาน --</option>
+                <option value="สมชาย รักเรียน">สมชาย รักเรียน</option>
+                <option value="สมหญิง จริงใจ">สมหญิง จริงใจ</option>
+                <option value="นที สีใส">นที สีใส</option>
+            </select>
+        </div>
+
+        <hr style="border: 0.5px solid #eee; margin: 25px 0;">
+
+        <div class="form-group">
+            <label>1. จุดแข็งที่โดดเด่นในการทำงาน</label>
+            <textarea id="q1" placeholder="พิมพ์ข้อความตอบแบบปลายเปิด..." required></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>2. สิ่งที่ควรพัฒนาหรือปรับปรุง</label>
+            <textarea id="q2" placeholder="พิมพ์ข้อความตอบแบบปลายเปิด..." required></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>3. ข้อเสนอแนะอื่นๆ</label>
+            <textarea id="q3" placeholder="พิมพ์ข้อความตอบแบบปลายเปิด..."></textarea>
+        </div>
+
+        <button type="submit" id="submitBtn">ส่งผลการประเมิน</button>
+    </form>
+    
+    <div id="status"></div>
+</div>
+
+<script>
+    const scriptURL = 'ใส่_URL_WEB_APP_ที่ได้จาก_APPS_SCRIPT_ตรงนี้';
+    const form = document.getElementById('evalForm');
+    const statusDiv = document.getElementById('status');
+
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        const btn = document.getElementById('submitBtn');
+        btn.disabled = true;
+        btn.innerHTML = 'กำลังบันทึกข้อมูล...';
+
+        const data = {
+            evaluator: document.getElementById('evaluator').value,
+            employee: document.getElementById('employee').value,
+            q1: document.getElementById('q1').value,
+            q2: document.getElementById('q2').value,
+            q3: document.getElementById('q3').value
+        };
+
+        fetch(scriptURL, {
+            method: 'POST',
+            mode: 'no-cors', // สำคัญ: เพื่อเลี่ยงปัญหา CORS กับ Google
+            cache: 'no-cache',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+        .then(() => {
+            statusDiv.style.display = 'block';
+            statusDiv.innerHTML = '<span style="color: green;">ส่งข้อมูลสำเร็จ ขอบคุณครับ!</span>';
+            form.reset();
+            btn.disabled = false;
+            btn.innerHTML = 'ส่งผลการประเมิน';
+        })
+        .catch(error => {
+            statusDiv.style.display = 'block';
+            statusDiv.innerHTML = '<span style="color: red;">เกิดข้อผิดพลาด กรุณาลองใหม่</span>';
+            btn.disabled = false;
+            console.error('Error!', error.message);
+        });
+    });
+</script>
+
+</body>
+</html>
