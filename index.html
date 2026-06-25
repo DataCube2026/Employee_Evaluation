@@ -3,181 +3,190 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Employee Evaluation - DataCube</title>
+    <title>Evaluation System - DataCube</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
-    <!-- SweetAlert2 สำหรับ Pop-up สวยๆ -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        :root { --primary-red: #E30613; --dark: #1a1a1a; --gray: #f8f9fa; }
-        body { font-family: 'Kanit', sans-serif; background-color: var(--gray); margin: 0; padding: 20px; }
-        .container { max-width: 800px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); border-top: 10px solid var(--primary-red); }
-        .logo-area { text-align: center; margin-bottom: 15px; }
-        .logo-area img { max-height: 80px; }
-        #displayCompanyName { text-align: center; font-size: 1.4rem; font-weight: 600; color: var(--dark); margin-bottom: 25px; }
+        :root { --primary-red: #E30613; --dark: #1a1a1a; --gray: #f4f4f4; }
+        * { font-family: 'Kanit', sans-serif; box-sizing: border-box; }
+        body { background-color: var(--gray); margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
         
-        /* Tab System */
-        .tabs { display: flex; gap: 10px; margin-bottom: 25px; }
-        .tab-btn { flex: 1; padding: 12px; border: 2px solid var(--primary-red); background: white; cursor: pointer; border-radius: 6px; font-weight: 600; font-family: 'Kanit'; transition: 0.3s; }
-        .tab-btn.active { background: var(--primary-red); color: white; }
-        
-        .section-title { background: #333; color: white; padding: 8px 15px; border-radius: 4px; margin: 25px 0 15px 0; font-size: 0.95rem; }
-        .form-group { margin-bottom: 18px; }
-        label { display: block; margin-bottom: 6px; font-weight: 600; color: #444; }
-        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-family: 'Kanit'; font-size: 0.95rem; }
-        textarea { height: 80px; resize: vertical; }
-        
-        .btn-submit { width: 100%; padding: 15px; background: var(--primary-red); color: white; border: none; border-radius: 6px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: 0.3s; margin-top: 20px; }
-        .btn-submit:hover { background: #b3050f; transform: translateY(-2px); }
+        .container { background: white; width: 100%; max-width: 600px; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 8px solid var(--primary-red); position: relative; }
+        .logo-section { text-align: center; margin-bottom: 20px; }
+        .logo-section img { max-width: 150px; min-height: 50px; }
+        .company-title { text-align: center; font-size: 1.5rem; font-weight: 600; color: var(--dark); margin-bottom: 30px; }
 
-        #adminBtn { position: fixed; bottom: 10px; right: 10px; opacity: 0.2; font-size: 10px; border: none; background: none; cursor: pointer; }
-        #adminBtn:hover { opacity: 1; color: var(--primary-red); }
+        /* หน้าแรก (Landing) */
+        .landing-menu { display: flex; flex-direction: column; gap: 15px; }
+        .menu-btn { padding: 20px; font-size: 1.2rem; font-weight: 600; border: 2px solid var(--primary-red); border-radius: 10px; background: white; color: var(--primary-red); cursor: pointer; transition: 0.3s; text-align: center; }
+        .menu-btn:hover { background: var(--primary-red); color: white; transform: translateY(-3px); }
+
+        /* หน้าฟอร์ม */
         .hidden { display: none; }
+        .form-header { display: flex; align-items: center; margin-bottom: 25px; gap: 10px; }
+        .back-btn { background: #eee; border: none; padding: 5px 15px; border-radius: 5px; cursor: pointer; font-size: 0.9rem; }
+        .back-btn:hover { background: #ddd; }
+
+        .section-title { background: var(--dark); color: white; padding: 8px 15px; border-radius: 5px; margin: 25px 0 15px 0; font-size: 1rem; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--dark); }
+        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; }
+        textarea { height: 100px; resize: vertical; }
+
+        .submit-btn { width: 100%; padding: 15px; background: var(--primary-red); color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: 0.3s; margin-top: 20px; }
+        .submit-btn:hover { background: #b3050f; }
+
+        #adminBtn { position: fixed; bottom: 10px; right: 10px; opacity: 0.1; border: none; background: none; cursor: pointer; font-size: 10px; }
+        #adminBtn:hover { opacity: 1; color: var(--primary-red); }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="logo-area">
-        <img id="mainLogo" src="https://i.ibb.co/3Y0M2p5/datacube-logo.png" alt="Logo">
+    <div class="logo-section">
+        <!-- โลโก้จะดึงจาก Settings อัตโนมัติ -->
+        <img id="mainLogo" src="" alt="Loading Logo...">
     </div>
-    <div id="displayCompanyName">DataCube</div>
+    <div id="compName" class="company-title">DataCube</div>
 
-    <div class="tabs">
-        <button type="button" id="btnInt" class="tab-btn active" onclick="switchTab('internal')">ประเมินภายใน (Internal)</button>
-        <button type="button" id="btnExt" class="tab-btn" onclick="switchTab('external')">ประเมินลูกค้า (External)</button>
+    <!-- ส่วนที่ 1: หน้าเลือกเมนู -->
+    <div id="landingPage" class="landing-menu">
+        <div style="text-align: center; margin-bottom: 10px; color: #666;">กรุณาเลือกประเภทการประเมิน</div>
+        <button class="menu-btn" onclick="startApp('self')">ประเมินตนเอง (Self-Evaluation)</button>
+        <button class="menu-btn" onclick="startApp('client')">ประเมินโดยลูกค้า (Client Evaluation)</button>
     </div>
 
-    <form id="evalForm">
-        <!-- ข้อมูลพื้นฐาน -->
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-            <div class="form-group">
-                <label>ชื่อผู้ประเมิน</label>
-                <input type="text" id="evaluator" placeholder="กรอกชื่อของคุณ" required>
+    <!-- ส่วนที่ 2: หน้าฟอร์ม -->
+    <div id="formPage" class="hidden">
+        <div class="form-header">
+            <button class="back-btn" onclick="goHome()">← ย้อนกลับ</button>
+            <h3 id="formTitle" style="margin:0; color: var(--primary-red);"></h3>
+        </div>
+
+        <form id="evalForm">
+            <div style="display: grid; grid-template-columns: 1fr; gap: 15px; margin-bottom: 20px;">
+                <div class="form-group">
+                    <label>ชื่อผู้ประเมิน</label>
+                    <input type="text" id="evaluator" placeholder="กรอกชื่อ-นามสกุล ของท่าน" required>
+                </div>
+                <div class="form-group" id="empSelectArea">
+                    <label>พนักงานที่ต้องการประเมิน (สำหรับลูกค้า)</label>
+                    <select id="employee">
+                        <option value="ประเมินตนเอง">-- ประเมินตนเอง --</option>
+                        <option value="พนักงาน A">พนักงาน A</option>
+                        <option value="พนักงาน B">พนักงาน B</option>
+                    </select>
+                </div>
             </div>
-            <div class="form-group">
-                <label>ชื่อพนักงานที่ถูกประเมิน</label>
-                <select id="employee" required>
-                    <option value="">-- เลือกชื่อพนักงาน --</option>
-                    <option value="พนักงาน A">พนักงาน A</option>
-                    <option value="พนักงาน B">พนักงาน B</option>
-                </select>
-            </div>
-        </div>
 
-        <!-- ส่วนที่ 1: Internal -->
-        <div id="secInternal">
-            <div class="section-title">หมวดกระบวนการทำงานและการปฏิบัติการ</div>
-            <div class="form-group"><label>1. กระบวนการใดที่ซ้ำซ้อนหรือควรทำ Automation?</label><textarea id="q1" required></textarea></div>
-            <div class="form-group"><label>2. อุปสรรคใหญ่ที่สุดและข้อเสนอแนะ?</label><textarea id="q2" required></textarea></div>
-            <div class="form-group"><label>3. หากเปลี่ยนกระบวนการทำงานได้ 1 อย่าง คืออะไร?</label><textarea id="q3" required></textarea></div>
-            <div class="section-title">หมวดการสนับสนุนและทรัพยากร</div>
-            <div class="form-group"><label>4. ขาดเครื่องมือหรือทรัพยากรใด?</label><textarea id="q4" required></textarea></div>
-            <div class="form-group"><label>5. ต้องการการสนับสนุนด้านใดจาก PM/ผู้บริหาร?</label><textarea id="q5" required></textarea></div>
-            <div class="section-title">หมวดการทำงานร่วมกัน</div>
-            <div class="form-group"><label>6. การประสานงานกับทีมอื่นราบรื่นหรือไม่?</label><textarea id="q6" required></textarea></div>
-            <div class="form-group"><label>7. โอกาสในการนำ Data มาใช้ประโยชน์?</label><textarea id="q7" required></textarea></div>
-            <div class="form-group"><label>8. ข้อเสนอแนะอื่นๆ เพื่อทีม?</label><textarea id="q8"></textarea></div>
-        </div>
+            <div id="questionArea"></div>
 
-        <!-- ส่วนที่ 2: External -->
-        <div id="secExternal" class="hidden">
-            <div class="section-title">หมวดประสิทธิภาพและผลลัพธ์</div>
-            <div class="form-group"><label>1. จุดแข็งที่ทำได้ดีที่สุด?</label><textarea id="q9"></textarea></div>
-            <div class="form-group"><label>2. ข้อผิดพลาดหรือสิ่งที่ควรปรับปรุง?</label><textarea id="q10"></textarea></div>
-            <div class="form-group"><label>3. ผลงานตอบโจทย์เป้าหมายเพียงใด?</label><textarea id="q11"></textarea></div>
-            <div class="section-title">หมวดการสื่อสารและการแก้ปัญหา</div>
-            <div class="form-group"><label>4. การจัดการปัญหาเหมาะสมหรือไม่?</label><textarea id="q12"></textarea></div>
-            <div class="form-group"><label>5. ช่องทางรายงานผลชัดเจนหรือไม่?</label><textarea id="q13"></textarea></div>
-            <div class="section-title">หมวดความคาดหวัง</div>
-            <div class="form-group"><label>6. สิ่งที่คาดหวังในโปรเจคต่อๆ ไป?</label><textarea id="q14"></textarea></div>
-            <div class="form-group"><label>7. คำแนะนำ 1 ข้อ เพื่ออนาคต?</label><textarea id="q15"></textarea></div>
-        </div>
-
-        <button type="submit" id="submitBtn" class="btn-submit">ส่งผลการประเมิน</button>
-    </form>
+            <button type="submit" id="saveBtn" class="submit-btn">ส่งผลการประเมิน</button>
+        </form>
+    </div>
 </div>
 
 <button id="adminBtn" onclick="openAdmin()">Admin Config</button>
 
 <script>
-    // ** เปลี่ยน URL ตรงนี้เป็นตัวล่าสุดจาก Apps Script ของคุณ **
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbwhQyaD82Ywe54ewtNM5ZIfRp0umB54N-5CYorvMoxAXUW_TuxO_MXS1YsqbSDVuqSA/exec';
-    let currentType = 'internal';
+    const scriptURL = 'ใส่_URL_WEB_APP_ที่นี่';
+    let currentMode = '';
 
-    // โหลดโลโก้จาก Google Sheets ตอนเปิดหน้าเว็บ
-    window.onload = () => {
-        fetch(scriptURL).then(res => res.json()).then(data => {
-            if(data.logo) document.getElementById('mainLogo').src = data.logo;
-            if(data.company) document.getElementById('displayCompanyName').innerText = data.company;
-        }).catch(err => console.log("Load settings error"));
+    // โหลด Settings
+    fetch(scriptURL).then(res => res.json()).then(data => {
+        if(data.logo) document.getElementById('mainLogo').src = data.logo;
+        if(data.company) {
+            document.getElementById('compName').innerText = data.company;
+            document.querySelectorAll('.company-title').forEach(el => el.innerText = data.company);
+        }
+    });
+
+    const questions = {
+        self: [
+            "1. ความสำเร็จที่ภาคภูมิใจที่สุดในการทำงานช่วงที่ผ่านมาคืออะไร?",
+            "2. จุดแข็งที่คุณนำมาใช้ในการทำงานอย่างเต็มที่คืออะไร?",
+            "3. ส่วนใดของงานที่คุณรู้สึกว่ายังทำได้ไม่ดีพอ และต้องการปรับปรุง?",
+            "4. คุณได้เรียนรู้ทักษะใหม่ๆ หรือพัฒนาตนเองในด้านใดบ้าง?",
+            "5. หากต้องให้คะแนนความรับผิดชอบตนเอง (1-10) คุณให้เท่าไหร่ เพราะเหตุใด?",
+            "6. อุปสรรคสำคัญในการทำงานที่ต้องการให้ทีมช่วยเหลือคืออะไร?",
+            "7. เป้าหมายในการทำงานที่คุณต้องการบรรลุในระยะถัดไปคืออะไร?",
+            "8. ข้อเสนอแนะเพื่อพัฒนาบรรยากาศการทำงานในทีม?"
+        ],
+        client: [
+            "1. พนักงาน/ทีมงาน มีความเข้าใจในความต้องการของท่านมากน้อยเพียงใด?",
+            "2. ความรวดเร็วและคุณภาพในการตอบสนองต่อปัญหาเป็นอย่างไร?",
+            "3. ผลงานที่ได้รับตรงตามมาตรฐานและกำหนดการที่ตกลงกันไว้หรือไม่?",
+            "4. การสื่อสารและการรายงานความคืบหน้ามีความชัดเจนหรือไม่?",
+            "5. ท่านประทับใจในทักษะด้านใดของพนักงานรายนี้มากที่สุด?",
+            "6. มีจุดใดที่ท่านอยากให้พนักงานปรับปรุงเป็นพิเศษหรือไม่?",
+            "7. หากมีโปรเจคในอนาคต ท่านยังไว้วางใจให้พนักงานรายนี้ดูแลหรือไม่?",
+            "8. ข้อเสนอแนะอื่นๆ เพื่อการให้บริการที่ดีขึ้นในครั้งถัดไป?"
+        ]
     };
 
-    function switchTab(type) {
-        currentType = type;
-        document.getElementById('btnInt').classList.toggle('active', type === 'internal');
-        document.getElementById('btnExt').classList.toggle('active', type === 'external');
-        document.getElementById('secInternal').classList.toggle('hidden', type === 'external');
-        document.getElementById('secExternal').classList.toggle('hidden', type === 'internal');
+    function startApp(mode) {
+        currentMode = mode;
+        document.getElementById('landingPage').classList.add('hidden');
+        document.getElementById('formPage').classList.remove('hidden');
+        document.getElementById('formTitle').innerText = mode === 'self' ? 'แบบประเมินตนเอง' : 'แบบประเมินโดยลูกค้า';
         
-        // ปรับ Required ของฟิลด์ตาม Tab ที่เลือก
-        const intInputs = document.querySelectorAll('#secInternal textarea');
-        const extInputs = document.querySelectorAll('#secExternal textarea');
-        intInputs.forEach(i => i.required = (type === 'internal'));
-        extInputs.forEach(i => i.required = (type === 'external'));
+        // จัดการส่วนเลือกพนักงาน
+        const empSelect = document.getElementById('employee');
+        if(mode === 'self') {
+            empSelect.value = "ประเมินตนเอง";
+            document.getElementById('empSelectArea').style.display = 'none';
+        } else {
+            empSelect.value = "";
+            document.getElementById('empSelectArea').style.display = 'block';
+            empSelect.required = true;
+        }
+
+        // สร้างคำถาม
+        const qArea = document.getElementById('questionArea');
+        qArea.innerHTML = '';
+        questions[mode].forEach((q, i) => {
+            qArea.innerHTML += `
+                <div class="form-group">
+                    <label>${q}</label>
+                    <textarea id="q${i+1}" required placeholder="ระบุรายละเอียด..."></textarea>
+                </div>`;
+        });
+    }
+
+    function goHome() {
+        document.getElementById('landingPage').classList.remove('hidden');
+        document.getElementById('formPage').classList.add('hidden');
+        document.getElementById('evalForm').reset();
     }
 
     document.getElementById('evalForm').addEventListener('submit', e => {
         e.preventDefault();
-        const btn = document.getElementById('submitBtn');
-        btn.disabled = true;
-        btn.innerHTML = 'กำลังบันทึก...';
+        Swal.fire({ title: 'กำลังส่งข้อมูล...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
 
         const body = {
             action: "saveEval",
-            type: currentType,
+            type: currentMode,
             evaluator: document.getElementById('evaluator').value,
             employee: document.getElementById('employee').value
         };
-        // กวาดข้อมูล q1-q15
-        for(let i=1; i<=15; i++) { body['q'+i] = document.getElementById('q'+i).value; }
+        for(let i=1; i<=8; i++) { body['q'+i] = document.getElementById('q'+i).value; }
 
         fetch(scriptURL, { method: 'POST', body: JSON.stringify(body) })
         .then(() => {
-            Swal.fire({
-                icon: 'success',
-                title: 'บันทึกสำเร็จ!',
-                text: 'ข้อมูลของคุณถูกเก็บในระบบเรียบร้อยแล้ว',
-                confirmButtonColor: '#E30613'
-            });
-            document.getElementById('evalForm').reset();
-            btn.disabled = false;
-            btn.innerHTML = 'ส่งผลการประเมิน';
-        })
-        .catch(error => {
-            Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาด', text: 'กรุณาลองใหม่อีกครั้ง' });
-            btn.disabled = false;
-            btn.innerHTML = 'ส่งผลการประเมิน';
+            Swal.fire({ icon: 'success', title: 'บันทึกสำเร็จ!', text: 'ขอบคุณที่ร่วมทำแบบประเมินครับ', confirmButtonColor: '#E30613' })
+            .then(() => goHome());
         });
     });
 
     async function openAdmin() {
         const { value: formValues } = await Swal.fire({
-            title: 'ตั้งค่าระบบ',
-            html:
-                '<input id="sw-logo" class="swal2-input" placeholder="ลิงก์โลโก้ (URL)">' +
-                '<input id="sw-comp" class="swal2-input" placeholder="ชื่อบริษัท">',
-            focusConfirm: false,
-            preConfirm: () => {
-                return { logo: document.getElementById('sw-logo').value, company: document.getElementById('sw-comp').value }
-            }
+            title: 'Admin Settings',
+            html: '<input id="sw-logo" class="swal2-input" placeholder="Logo URL"><input id="sw-comp" class="swal2-input" placeholder="Company Name">',
+            preConfirm: () => ({ logo: document.getElementById('sw-logo').value, company: document.getElementById('sw-comp').value })
         });
-
-        if (formValues && (formValues.logo || formValues.company)) {
-            Swal.fire({ title: 'กำลังอัปเดต...', didOpen: () => Swal.showLoading() });
-            fetch(scriptURL, { 
-                method: 'POST', 
-                body: JSON.stringify({ action: "updateSettings", ...formValues }) 
-            }).then(() => location.reload());
+        if (formValues) {
+            fetch(scriptURL, { method: 'POST', body: JSON.stringify({ action: "updateSettings", ...formValues }) })
+            .then(() => location.reload());
         }
     }
 </script>
