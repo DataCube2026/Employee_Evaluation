@@ -5,196 +5,181 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Employee Evaluation - DataCube</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- SweetAlert2 สำหรับ Pop-up สวยๆ -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        :root {
-            --primary-red: #E30613;
-            --dark-black: #1a1a1a;
-            --soft-white: #ffffff;
-            --gray-bg: #f4f4f4;
-        }
+        :root { --primary-red: #E30613; --dark: #1a1a1a; --gray: #f8f9fa; }
+        body { font-family: 'Kanit', sans-serif; background-color: var(--gray); margin: 0; padding: 20px; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); border-top: 10px solid var(--primary-red); }
+        .logo-area { text-align: center; margin-bottom: 15px; }
+        .logo-area img { max-height: 80px; }
+        #displayCompanyName { text-align: center; font-size: 1.4rem; font-weight: 600; color: var(--dark); margin-bottom: 25px; }
+        
+        /* Tab System */
+        .tabs { display: flex; gap: 10px; margin-bottom: 25px; }
+        .tab-btn { flex: 1; padding: 12px; border: 2px solid var(--primary-red); background: white; cursor: pointer; border-radius: 6px; font-weight: 600; font-family: 'Kanit'; transition: 0.3s; }
+        .tab-btn.active { background: var(--primary-red); color: white; }
+        
+        .section-title { background: #333; color: white; padding: 8px 15px; border-radius: 4px; margin: 25px 0 15px 0; font-size: 0.95rem; }
+        .form-group { margin-bottom: 18px; }
+        label { display: block; margin-bottom: 6px; font-weight: 600; color: #444; }
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-family: 'Kanit'; font-size: 0.95rem; }
+        textarea { height: 80px; resize: vertical; }
+        
+        .btn-submit { width: 100%; padding: 15px; background: var(--primary-red); color: white; border: none; border-radius: 6px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: 0.3s; margin-top: 20px; }
+        .btn-submit:hover { background: #b3050f; transform: translateY(-2px); }
 
-        body {
-            font-family: 'Kanit', sans-serif;
-            background-color: var(--gray-bg);
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        .container {
-            background: var(--soft-white);
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 500px;
-            border-top: 8px solid var(--primary-red);
-        }
-
-        .logo-section {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .logo-section img {
-            max-width: 150px; /* ใส่ URL โลโก้ของคุณตรงนี้ */
-        }
-
-        h2 {
-            color: var(--dark-black);
-            text-align: center;
-            margin-bottom: 5px;
-        }
-
-        p.subtitle {
-            text-align: center;
-            color: #666;
-            font-size: 0.9em;
-            margin-bottom: 30px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: var(--dark-black);
-        }
-
-        input[type="text"], select, textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            box-sizing: border-box;
-            font-family: 'Kanit', sans-serif;
-        }
-
-        textarea {
-            resize: vertical;
-            height: 100px;
-        }
-
-        button {
-            width: 100%;
-            padding: 15px;
-            background-color: var(--primary-red);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 1.1em;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        button:hover {
-            background-color: #b3050f;
-        }
-
-        #status {
-            text-align: center;
-            margin-top: 15px;
-            display: none;
-        }
+        #adminBtn { position: fixed; bottom: 10px; right: 10px; opacity: 0.2; font-size: 10px; border: none; background: none; cursor: pointer; }
+        #adminBtn:hover { opacity: 1; color: var(--primary-red); }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="logo-section">
-        <!-- ใส่ลิงก์รูปโลโก้บริษัทของคุณที่นี่ -->
-        <img src="https://i.ibb.co/3Y0M2p5/datacube-logo.png" alt="DataCube Logo">
+    <div class="logo-area">
+        <img id="mainLogo" src="https://i.ibb.co/3Y0M2p5/datacube-logo.png" alt="Logo">
+    </div>
+    <div id="displayCompanyName">DataCube</div>
+
+    <div class="tabs">
+        <button type="button" id="btnInt" class="tab-btn active" onclick="switchTab('internal')">ประเมินภายใน (Internal)</button>
+        <button type="button" id="btnExt" class="tab-btn" onclick="switchTab('external')">ประเมินลูกค้า (External)</button>
     </div>
 
-    <h2>แบบประเมินพนักงาน</h2>
-    <p class="subtitle">Turning Data Into Real Business Value</p>
-
     <form id="evalForm">
-        <div class="form-group">
-            <label>ชื่อผู้ประเมิน</label>
-            <input type="text" id="evaluator" placeholder="ระบุชื่อของคุณ" required>
+        <!-- ข้อมูลพื้นฐาน -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div class="form-group">
+                <label>ชื่อผู้ประเมิน</label>
+                <input type="text" id="evaluator" placeholder="กรอกชื่อของคุณ" required>
+            </div>
+            <div class="form-group">
+                <label>ชื่อพนักงานที่ถูกประเมิน</label>
+                <select id="employee" required>
+                    <option value="">-- เลือกชื่อพนักงาน --</option>
+                    <option value="พนักงาน A">พนักงาน A</option>
+                    <option value="พนักงาน B">พนักงาน B</option>
+                </select>
+            </div>
         </div>
 
-        <div class="form-group">
-            <label>ชื่อพนักงานที่ถูกประเมิน</label>
-            <select id="employee" required>
-                <option value="">-- เลือกพนักงาน --</option>
-                <option value="สมชาย รักเรียน">สมชาย รักเรียน</option>
-                <option value="สมหญิง จริงใจ">สมหญิง จริงใจ</option>
-                <option value="นที สีใส">นที สีใส</option>
-            </select>
+        <!-- ส่วนที่ 1: Internal -->
+        <div id="secInternal">
+            <div class="section-title">หมวดกระบวนการทำงานและการปฏิบัติการ</div>
+            <div class="form-group"><label>1. กระบวนการใดที่ซ้ำซ้อนหรือควรทำ Automation?</label><textarea id="q1" required></textarea></div>
+            <div class="form-group"><label>2. อุปสรรคใหญ่ที่สุดและข้อเสนอแนะ?</label><textarea id="q2" required></textarea></div>
+            <div class="form-group"><label>3. หากเปลี่ยนกระบวนการทำงานได้ 1 อย่าง คืออะไร?</label><textarea id="q3" required></textarea></div>
+            <div class="section-title">หมวดการสนับสนุนและทรัพยากร</div>
+            <div class="form-group"><label>4. ขาดเครื่องมือหรือทรัพยากรใด?</label><textarea id="q4" required></textarea></div>
+            <div class="form-group"><label>5. ต้องการการสนับสนุนด้านใดจาก PM/ผู้บริหาร?</label><textarea id="q5" required></textarea></div>
+            <div class="section-title">หมวดการทำงานร่วมกัน</div>
+            <div class="form-group"><label>6. การประสานงานกับทีมอื่นราบรื่นหรือไม่?</label><textarea id="q6" required></textarea></div>
+            <div class="form-group"><label>7. โอกาสในการนำ Data มาใช้ประโยชน์?</label><textarea id="q7" required></textarea></div>
+            <div class="form-group"><label>8. ข้อเสนอแนะอื่นๆ เพื่อทีม?</label><textarea id="q8"></textarea></div>
         </div>
 
-        <hr style="border: 0.5px solid #eee; margin: 25px 0;">
-
-        <div class="form-group">
-            <label>1. จุดแข็งที่โดดเด่นในการทำงาน</label>
-            <textarea id="q1" placeholder="พิมพ์ข้อความตอบแบบปลายเปิด..." required></textarea>
+        <!-- ส่วนที่ 2: External -->
+        <div id="secExternal" class="hidden">
+            <div class="section-title">หมวดประสิทธิภาพและผลลัพธ์</div>
+            <div class="form-group"><label>1. จุดแข็งที่ทำได้ดีที่สุด?</label><textarea id="q9"></textarea></div>
+            <div class="form-group"><label>2. ข้อผิดพลาดหรือสิ่งที่ควรปรับปรุง?</label><textarea id="q10"></textarea></div>
+            <div class="form-group"><label>3. ผลงานตอบโจทย์เป้าหมายเพียงใด?</label><textarea id="q11"></textarea></div>
+            <div class="section-title">หมวดการสื่อสารและการแก้ปัญหา</div>
+            <div class="form-group"><label>4. การจัดการปัญหาเหมาะสมหรือไม่?</label><textarea id="q12"></textarea></div>
+            <div class="form-group"><label>5. ช่องทางรายงานผลชัดเจนหรือไม่?</label><textarea id="q13"></textarea></div>
+            <div class="section-title">หมวดความคาดหวัง</div>
+            <div class="form-group"><label>6. สิ่งที่คาดหวังในโปรเจคต่อๆ ไป?</label><textarea id="q14"></textarea></div>
+            <div class="form-group"><label>7. คำแนะนำ 1 ข้อ เพื่ออนาคต?</label><textarea id="q15"></textarea></div>
         </div>
 
-        <div class="form-group">
-            <label>2. สิ่งที่ควรพัฒนาหรือปรับปรุง</label>
-            <textarea id="q2" placeholder="พิมพ์ข้อความตอบแบบปลายเปิด..." required></textarea>
-        </div>
-
-        <div class="form-group">
-            <label>3. ข้อเสนอแนะอื่นๆ</label>
-            <textarea id="q3" placeholder="พิมพ์ข้อความตอบแบบปลายเปิด..."></textarea>
-        </div>
-
-        <button type="submit" id="submitBtn">ส่งผลการประเมิน</button>
+        <button type="submit" id="submitBtn" class="btn-submit">ส่งผลการประเมิน</button>
     </form>
-    
-    <div id="status"></div>
 </div>
 
-<script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbwhQyaD82Ywe54ewtNM5ZIfRp0umB54N-5CYorvMoxAXUW_TuxO_MXS1YsqbSDVuqSA/exec';
-    const form = document.getElementById('evalForm');
-    const statusDiv = document.getElementById('status');
+<button id="adminBtn" onclick="openAdmin()">Admin Config</button>
 
-    form.addEventListener('submit', e => {
+<script>
+    // ** เปลี่ยน URL ตรงนี้เป็นตัวล่าสุดจาก Apps Script ของคุณ **
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbwhQyaD82Ywe54ewtNM5ZIfRp0umB54N-5CYorvMoxAXUW_TuxO_MXS1YsqbSDVuqSA/exec';
+    let currentType = 'internal';
+
+    // โหลดโลโก้จาก Google Sheets ตอนเปิดหน้าเว็บ
+    window.onload = () => {
+        fetch(scriptURL).then(res => res.json()).then(data => {
+            if(data.logo) document.getElementById('mainLogo').src = data.logo;
+            if(data.company) document.getElementById('displayCompanyName').innerText = data.company;
+        }).catch(err => console.log("Load settings error"));
+    };
+
+    function switchTab(type) {
+        currentType = type;
+        document.getElementById('btnInt').classList.toggle('active', type === 'internal');
+        document.getElementById('btnExt').classList.toggle('active', type === 'external');
+        document.getElementById('secInternal').classList.toggle('hidden', type === 'external');
+        document.getElementById('secExternal').classList.toggle('hidden', type === 'internal');
+        
+        // ปรับ Required ของฟิลด์ตาม Tab ที่เลือก
+        const intInputs = document.querySelectorAll('#secInternal textarea');
+        const extInputs = document.querySelectorAll('#secExternal textarea');
+        intInputs.forEach(i => i.required = (type === 'internal'));
+        extInputs.forEach(i => i.required = (type === 'external'));
+    }
+
+    document.getElementById('evalForm').addEventListener('submit', e => {
         e.preventDefault();
         const btn = document.getElementById('submitBtn');
         btn.disabled = true;
-        btn.innerHTML = 'กำลังบันทึกข้อมูล...';
+        btn.innerHTML = 'กำลังบันทึก...';
 
-        const data = {
+        const body = {
+            action: "saveEval",
+            type: currentType,
             evaluator: document.getElementById('evaluator').value,
-            employee: document.getElementById('employee').value,
-            q1: document.getElementById('q1').value,
-            q2: document.getElementById('q2').value,
-            q3: document.getElementById('q3').value
+            employee: document.getElementById('employee').value
         };
+        // กวาดข้อมูล q1-q15
+        for(let i=1; i<=15; i++) { body['q'+i] = document.getElementById('q'+i).value; }
 
-        fetch(scriptURL, {
-            method: 'POST',
-            mode: 'no-cors', // สำคัญ: เพื่อเลี่ยงปัญหา CORS กับ Google
-            cache: 'no-cache',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        })
+        fetch(scriptURL, { method: 'POST', body: JSON.stringify(body) })
         .then(() => {
-            statusDiv.style.display = 'block';
-            statusDiv.innerHTML = '<span style="color: green;">ส่งข้อมูลสำเร็จ ขอบคุณครับ!</span>';
-            form.reset();
+            Swal.fire({
+                icon: 'success',
+                title: 'บันทึกสำเร็จ!',
+                text: 'ข้อมูลของคุณถูกเก็บในระบบเรียบร้อยแล้ว',
+                confirmButtonColor: '#E30613'
+            });
+            document.getElementById('evalForm').reset();
             btn.disabled = false;
             btn.innerHTML = 'ส่งผลการประเมิน';
         })
         .catch(error => {
-            statusDiv.style.display = 'block';
-            statusDiv.innerHTML = '<span style="color: red;">เกิดข้อผิดพลาด กรุณาลองใหม่</span>';
+            Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาด', text: 'กรุณาลองใหม่อีกครั้ง' });
             btn.disabled = false;
-            console.error('Error!', error.message);
+            btn.innerHTML = 'ส่งผลการประเมิน';
         });
     });
-</script>
 
+    async function openAdmin() {
+        const { value: formValues } = await Swal.fire({
+            title: 'ตั้งค่าระบบ',
+            html:
+                '<input id="sw-logo" class="swal2-input" placeholder="ลิงก์โลโก้ (URL)">' +
+                '<input id="sw-comp" class="swal2-input" placeholder="ชื่อบริษัท">',
+            focusConfirm: false,
+            preConfirm: () => {
+                return { logo: document.getElementById('sw-logo').value, company: document.getElementById('sw-comp').value }
+            }
+        });
+
+        if (formValues && (formValues.logo || formValues.company)) {
+            Swal.fire({ title: 'กำลังอัปเดต...', didOpen: () => Swal.showLoading() });
+            fetch(scriptURL, { 
+                method: 'POST', 
+                body: JSON.stringify({ action: "updateSettings", ...formValues }) 
+            }).then(() => location.reload());
+        }
+    }
+</script>
 </body>
 </html>
