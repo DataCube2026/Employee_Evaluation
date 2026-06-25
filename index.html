@@ -88,14 +88,13 @@
         }
         label { display: block; margin-bottom: 15px; font-weight: 600; font-size: 1rem; line-height: 1.5; color: #333; }
         
-        select { 
+        input[type="text"] { 
             width: 100%; 
             padding: 12px; 
             border: 1px solid #ddd; 
             border-radius: 8px; 
             font-size: 1rem; 
-            text-align: center;
-            text-align-last: center; /* สำหรับจัดข้อความใน select กึ่งกลาง */
+            text-align: center; /* จัดตัวอักษรที่พิมพ์กึ่งกลาง */
         }
         
         textarea { 
@@ -178,19 +177,10 @@
         </div>
 
         <form id="evalForm">
+            <!-- ส่วนกรอกชื่อ (แก้ไขจาก Dropdown เป็น Input) -->
             <div class="form-group" style="background: #fff8f8; border-color: #ffe0e0;">
-                <label>แผนก / บริษัท ของท่าน (BU)</label>
-                <select id="bu" required>
-                    <option value="">-- กรุณาเลือก --</option>
-                    <option value="Jaymart Mobile (JMB)">Jaymart Mobile (JMB)</option>
-                    <option value="JElite (JPoint)">JElite (JPoint)</option>
-                    <option value="Brewing Happiness (BH)">Brewing Happiness (BH)</option>
-                    <option value="JAS Asset (JAS)">JAS Asset (JAS)</option>
-                    <option value="SG Capital (SGC)">SG Capital (SGC)</option>
-                    <option value="Rawmat Coffee (RMC)">Rawmat Coffee (RMC)</option>
-                    <option value="CEO Business (Gen II)">CEO Business (Gen II)</option>
-                    <option value="Jaymart Holding (JMH)">Jaymart Holding (JMH)</option>
-                </select>
+                <label id="evaluatorLabel">ชื่อ-นามสกุล ของท่าน</label>
+                <input type="text" id="evaluatorName" placeholder="ระบุชื่อ-นามสกุล ของท่าน" required>
             </div>
 
             <div id="questionArea"></div>
@@ -201,6 +191,7 @@
 </div>
 
 <script>
+    // ** ตรวจสอบ Web App URL ของคุณที่นี่ **
     const scriptURL = 'https://script.google.com/macros/s/AKfycbwhQyaD82Ywe54ewtNM5ZIfRp0umB54N-5CYorvMoxAXUW_TuxO_MXS1YsqbSDVuqSA/exec';
     let currentMode = '';
 
@@ -231,7 +222,21 @@
         currentMode = mode;
         document.getElementById('landingPage').classList.add('hidden');
         document.getElementById('formPage').classList.remove('hidden');
-        document.getElementById('formTitle').innerText = mode === 'self' ? 'ประเมินตนเอง' : 'ลูกค้าประเมินทีม';
+        
+        // ปรับแต่งหัวข้อตามโหมด
+        const titleEl = document.getElementById('formTitle');
+        const labelEl = document.getElementById('evaluatorLabel');
+        const inputEl = document.getElementById('evaluatorName');
+
+        if(mode === 'self') {
+            titleEl.innerText = 'ประเมินตนเอง';
+            labelEl.innerText = 'ชื่อ-นามสกุล พนักงาน (ผู้ประเมิน)';
+            inputEl.placeholder = 'ระบุชื่อ-นามสกุล ของท่าน';
+        } else {
+            titleEl.innerText = 'ลูกค้าประเมินทีม';
+            labelEl.innerText = 'ชื่อผู้ประเมิน / หน่วยงาน ของท่าน';
+            inputEl.placeholder = 'ระบุชื่อหรือหน่วยงาน ของท่าน';
+        }
         
         const qArea = document.getElementById('questionArea');
         qArea.innerHTML = '';
@@ -267,27 +272,35 @@
     function goHome() {
         document.getElementById('landingPage').classList.remove('hidden');
         document.getElementById('formPage').classList.add('hidden');
+        document.getElementById('evalForm').reset();
     }
 
     document.getElementById('evalForm').addEventListener('submit', e => {
         e.preventDefault();
+        
+        // ตรวจสอบคะแนนให้ครบ
         for(let i=1; i<=8; i++) {
             if(!document.getElementById(`q${i}_score`).value) {
                 Swal.fire('ข้อมูลไม่ครบ', `กรุณาให้คะแนนข้อที่ ${i}`, 'warning');
                 return;
             }
         }
+
         Swal.fire({ title: 'กำลังส่งข้อมูล...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
         const body = {
             action: "saveEval",
             type: currentMode,
-            bu: document.getElementById('bu').value,
+            // ส่งชื่อผู้ประเมินที่กรอกเข้าไปแทนค่า BU เดิม
+            bu: document.getElementById('evaluatorName').value, 
             target: "ทีม COE Data"
         };
+
         for(let i=1; i<=8; i++) {
             body[`q${i}_score`] = document.getElementById(`q${i}_score`).value;
             body[`q${i}_note`] = document.getElementById(`q${i}_note`).value;
         }
+
         fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(body) })
         .then(() => {
             Swal.fire({ icon: 'success', title: 'บันทึกสำเร็จ!', text: 'ขอบคุณที่ร่วมพัฒนาทีมครับ' })
