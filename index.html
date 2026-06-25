@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Evaluation System - DataCube</title>
+    <title>Team Evaluation - COE Data</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
@@ -11,95 +11,119 @@
         * { font-family: 'Kanit', sans-serif; box-sizing: border-box; }
         body { background-color: var(--gray); margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
         .container { background: white; width: 100%; max-width: 600px; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 8px solid var(--primary-red); }
-        .logo-section { text-align: center; margin-bottom: 20px; }
+        .logo-section { text-align: center; margin-bottom: 10px; }
         .logo-section img { max-width: 150px; min-height: 50px; object-fit: contain; }
-        .company-title { text-align: center; font-size: 1.5rem; font-weight: 600; color: var(--dark); margin-bottom: 30px; }
+        .company-title { text-align: center; font-size: 1.5rem; font-weight: 600; color: var(--dark); margin-bottom: 5px; }
+        .team-title { text-align: center; font-size: 1.1rem; color: var(--primary-red); margin-bottom: 30px; font-weight: 400; }
+        
         .landing-menu { display: flex; flex-direction: column; gap: 15px; }
         .menu-btn { padding: 20px; font-size: 1.1rem; font-weight: 600; border: 2px solid var(--primary-red); border-radius: 10px; background: white; color: var(--primary-red); cursor: pointer; transition: 0.3s; }
         .menu-btn:hover { background: var(--primary-red); color: white; transform: translateY(-3px); }
+        
         .hidden { display: none; }
         .form-header { display: flex; align-items: center; margin-bottom: 25px; gap: 10px; }
-        .back-btn { background: #eee; border: none; padding: 5px 15px; border-radius: 5px; cursor: pointer; }
+        .back-btn { background: #eee; border: none; padding: 5px 15px; border-radius: 5px; cursor: pointer; font-size: 0.9rem; }
+        
         .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--dark); }
-        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--dark); font-size: 0.95rem; }
+        input, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; }
         textarea { height: 100px; resize: vertical; }
+        
         .submit-btn { width: 100%; padding: 15px; background: var(--primary-red); color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: 0.3s; margin-top: 20px; }
         .submit-btn:hover { background: #b3050f; }
-        #adminBtn { position: fixed; bottom: 10px; right: 10px; opacity: 0.1; border: none; background: none; cursor: pointer; font-size: 10px; }
-        #adminBtn:hover { opacity: 1; color: var(--primary-red); }
+        #adminBtn { position: fixed; bottom: 10px; right: 10px; opacity: 0.05; border: none; background: none; cursor: pointer; font-size: 10px; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="logo-section">
-        <!-- ใส่ ID mainLogo เพื่อรอรับลิงก์จาก Sheets -->
         <img id="mainLogo" src="https://i.ibb.co/2xYmDGM/logo-square.jpg" alt="Logo">
     </div>
     <div id="compName" class="company-title">DataCube</div>
+    <div class="team-title">ระบบประเมินผล ทีม COE Data</div>
 
+    <!-- หน้าแรก: เลือกประเภท -->
     <div id="landingPage" class="landing-menu">
         <div style="text-align: center; margin-bottom: 10px; color: #666;">กรุณาเลือกประเภทการประเมิน</div>
-        <button class="menu-btn" onclick="startApp('self')">ประเมินตนเอง (Self-Evaluation)</button>
-        <button class="menu-btn" onclick="startApp('client')">ประเมินโดยลูกค้า (Client Evaluation)</button>
+        <button class="menu-btn" onclick="startApp('self')">ประเมินผลการทำงานตนเอง (Self)</button>
+        <button class="menu-btn" onclick="startApp('client')">ลูกค้าประเมินผลงานทีม (Client)</button>
     </div>
 
+    <!-- หน้าฟอร์ม -->
     <div id="formPage" class="hidden">
         <div class="form-header">
             <button class="back-btn" onclick="goHome()">← ย้อนกลับ</button>
-            <h3 id="formTitle" style="margin:0; color: var(--primary-red);"></h3>
+            <h3 id="formTitle" style="margin:0; color: var(--primary-red); font-size: 1.2rem;"></h3>
         </div>
         <form id="evalForm">
             <div class="form-group">
-                <label>ชื่อผู้ประเมิน</label>
-                <input type="text" id="evaluator" placeholder="กรอกชื่อ-นามสกุล ของท่าน" required>
+                <label>ชื่อ-นามสกุล ของท่าน (ผู้ประเมิน)</label>
+                <input type="text" id="evaluator" placeholder="ระบุชื่อของท่าน" required>
             </div>
-            <div class="form-group" id="empSelectArea">
-                <label>พนักงานที่ต้องการประเมิน</label>
-                <select id="employee">
-                    <option value="ประเมินตนเอง">-- ประเมินตนเอง --</option>
-                    <option value="พนักงาน A">พนักงาน A</option>
-                    <option value="พนักงาน B">พนักงาน B</option>
-                </select>
+            <div class="form-group" id="targetGroup">
+                <label id="targetLabel">ชื่อพนักงานหรือชื่อทีมที่ต้องการประเมิน</label>
+                <input type="text" id="targetName" placeholder="ระบุชื่อผู้ถูกประเมิน" required>
             </div>
+            
             <div id="questionArea"></div>
-            <button type="submit" id="saveBtn" class="submit-btn">ส่งผลการประเมิน</button>
+            
+            <button type="submit" id="saveBtn" class="submit-btn">ส่งข้อมูลการประเมิน</button>
         </form>
     </div>
 </div>
 
-<button id="adminBtn" onclick="openAdmin()">Admin Config</button>
+<button id="adminBtn" onclick="openAdmin()">Admin</button>
 
 <script>
-    // ** เปลี่ยน URL ตรงนี้เป็น Web App URL ล่าสุดของคุณ **
+    // ** ใส่ Web App URL ของคุณที่นี่ (ต้อง Deploy เป็น Anyone) **
     const scriptURL = 'https://script.google.com/macros/s/AKfycbwhQyaD82Ywe54ewtNM5ZIfRp0umB54N-5CYorvMoxAXUW_TuxO_MXS1YsqbSDVuqSA/exec';
     let currentMode = '';
 
-    // โหลดโลโก้และชื่อบริษัทเมื่อเปิดหน้าเว็บ
     window.onload = () => {
-        fetch(scriptURL)
-        .then(res => res.json())
-        .then(data => {
+        fetch(scriptURL).then(res => res.json()).then(data => {
             if(data.logo) document.getElementById('mainLogo').src = data.logo;
             if(data.company) document.getElementById('compName').innerText = data.company;
-        })
-        .catch(err => console.error("Logo load error:", err));
+        }).catch(e => console.log("Default settings used"));
     };
 
     const questions = {
-        self: ["ความสำเร็จที่ภูมิใจที่สุด?","จุดแข็งที่นำมาใช้?","ส่วนที่ควรปรับปรุง?","ทักษะที่ได้เรียนรู้ใหม่?","คะแนนความรับผิดชอบ (1-10)?","อุปสรรคที่พบ?","เป้าหมายระยะถัดไป?","ข้อเสนอแนะเพื่อทีม?"],
-        client: ["ความเข้าใจในความต้องการ?","ความรวดเร็วในการตอบสนอง?","คุณภาพงานตรงกำหนดหรือไม่?","การสื่อสารชัดเจนหรือไม่?","ทักษะที่ประทับใจที่สุด?","จุดที่อยากให้ปรับปรุง?","ความไว้วางใจในอนาคต?","ข้อเสนอแนะเพิ่มเติม?"]
+        self: [
+            "เป้าหมายหลักของทีม COE Data ที่คุณทำสำเร็จในรอบนี้คืออะไร?",
+            "ทักษะด้าน Data ใดที่คุณได้พัฒนาขึ้นมากที่สุด?",
+            "คุณภาพงานที่คุณส่งมอบในทีม คุณพอใจระดับใด เพราะเหตุใด?",
+            "การประสานงานภายในทีม COE Data มีจุดใดที่ควรปรับปรุง?",
+            "คุณต้องการสนับสนุนด้านเครื่องมือหรือซอฟต์แวร์ใดเพิ่มเติม?",
+            "อุปสรรคที่ทำให้การทำงานล่าช้าคืออะไร?",
+            "คุณมีไอเดียในการนำ Data มาสร้าง Value ให้บริษัทเพิ่มอย่างไร?",
+            "ข้อเสนอแนะเพิ่มเติมเพื่อพัฒนาทีม COE Data"
+        ],
+        client: [
+            "ทีม COE Data ตอบโจทย์ความต้องการทางธุรกิจของคุณมากน้อยเพียงใด?",
+            "ความรวดเร็วในการส่งมอบ Report/Dashboard เป็นอย่างไร?",
+            "ความถูกต้องแม่นยำของข้อมูลที่คุณได้รับอยู่ในระดับใด?",
+            "พนักงานมีการสื่อสารและอธิบายข้อมูลให้เข้าใจง่ายหรือไม่?",
+            "คุณประทับใจในส่วนใดของบริการจากทีม COE Data มากที่สุด?",
+            "มีส่วนใดที่อยากให้ทีม COE Data ปรับปรุงแก้ไขเป็นพิเศษ?",
+            "หากมีโปรเจคใหม่ คุณอยากทำงานร่วมกับทีมเราอีกหรือไม่?",
+            "ข้อเสนอแนะอื่นๆ เพื่อการทำงานร่วมกันในอนาคต"
+        ]
     };
 
     function startApp(mode) {
         currentMode = mode;
         document.getElementById('landingPage').classList.add('hidden');
         document.getElementById('formPage').classList.remove('hidden');
-        document.getElementById('formTitle').innerText = mode === 'self' ? 'แบบประเมินตนเอง' : 'แบบประเมินโดยลูกค้า';
         
-        document.getElementById('empSelectArea').style.display = mode === 'self' ? 'none' : 'block';
-        document.getElementById('employee').value = mode === 'self' ? 'ประเมินตนเอง' : '';
+        if(mode === 'self') {
+            document.getElementById('formTitle').innerText = 'แบบประเมินตนเอง (COE Data)';
+            document.getElementById('targetLabel').innerText = 'ระบุตำแหน่งงานของคุณ (หรือชื่อทีมย่อย)';
+            document.getElementById('targetName').value = 'COE Data Team Member';
+        } else {
+            document.getElementById('formTitle').innerText = 'แบบประเมินโดยลูกค้า/หน่วยงาน';
+            document.getElementById('targetLabel').innerText = 'ระบุชื่อพนักงาน หรือทีมย่อยที่ท่านทำงานด้วย';
+            document.getElementById('targetName').value = '';
+        }
 
         const qArea = document.getElementById('questionArea');
         qArea.innerHTML = '';
@@ -115,30 +139,40 @@
 
     document.getElementById('evalForm').addEventListener('submit', e => {
         e.preventDefault();
-        Swal.fire({ title: 'กำลังส่งข้อมูล...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+        Swal.fire({ title: 'กำลังบันทึกข้อมูล...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
 
         const body = {
             action: "saveEval",
             type: currentMode,
             evaluator: document.getElementById('evaluator').value,
-            employee: document.getElementById('employee').value
+            employee: document.getElementById('targetName').value // ส่งชื่อที่พิมพ์เองเข้าคอลัมน์ Employee
         };
         for(let i=1; i<=8; i++) { body['q'+i] = document.getElementById('q'+i).value; }
 
-        fetch(scriptURL, { method: 'POST', body: JSON.stringify(body) })
+        fetch(scriptURL, { 
+            method: 'POST', 
+            mode: 'no-cors', // แก้ปัญหา CORS
+            cache: 'no-cache',
+            body: JSON.stringify(body) 
+        })
         .then(() => {
-            Swal.fire({ icon: 'success', title: 'บันทึกสำเร็จ!', text: 'ขอบคุณครับ' }).then(() => location.reload());
+            Swal.fire({ icon: 'success', title: 'ส่งข้อมูลสำเร็จ!', text: 'ขอบคุณที่ร่วมประเมินทีม COE Data ครับ' })
+            .then(() => location.reload());
+        })
+        .catch(err => {
+            Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาด', text: 'กรุณาลองใหม่อีกครั้ง' });
         });
     });
 
     async function openAdmin() {
         const { value: formValues } = await Swal.fire({
-            title: 'ตั้งค่าระบบ',
-            html: '<input id="sw-logo" class="swal2-input" placeholder="ลิงก์โลโก้"><input id="sw-comp" class="swal2-input" placeholder="ชื่อบริษัท">',
+            title: 'Admin Config',
+            html: '<input id="sw-logo" class="swal2-input" placeholder="Logo URL"><input id="sw-comp" class="swal2-input" placeholder="Company Name">',
             preConfirm: () => ({ logo: document.getElementById('sw-logo').value, company: document.getElementById('sw-comp').value })
         });
         if (formValues) {
-            fetch(scriptURL, { method: 'POST', body: JSON.stringify({ action: "updateSettings", ...formValues }) }).then(() => location.reload());
+            fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: "updateSettings", ...formValues }) })
+            .then(() => location.reload());
         }
     }
 </script>
