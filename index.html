@@ -3,222 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>COE Data Evaluation - DataCube</title>
+    <title>Self-Evaluation - COE Data</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         :root { --primary-red: #E30613; --dark: #1a1a1a; --gray: #f4f4f4; }
         * { font-family: 'Kanit', sans-serif; box-sizing: border-box; }
-        
-        body { 
-            background-color: var(--gray); 
-            margin: 0; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            min-height: 100vh; 
-            padding: 20px; 
-            color: var(--dark); 
-        }
-        
-        .container { 
-            background: white; 
-            width: 100%; 
-            max-width: 550px; 
-            padding: 40px 30px; 
-            border-radius: 20px; 
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1); 
-            border-top: 10px solid var(--primary-red); 
-            text-align: center;
-        }
-        
+        body { background-color: var(--gray); margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; color: var(--dark); }
+        .container { background: white; width: 100%; max-width: 550px; padding: 40px 30px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); border-top: 10px solid var(--primary-red); text-align: center; }
         .logo-section { margin-bottom: 15px; }
         .logo-section img { max-width: 140px; }
-        
         .company-title { font-size: 1.5rem; font-weight: 600; margin-bottom: 5px; }
         .team-title { font-size: 1rem; color: var(--primary-red); margin-bottom: 30px; }
-        
-        .landing-menu { display: flex; flex-direction: column; gap: 15px; }
-        .menu-btn { 
-            width: 100%; 
-            padding: 20px; 
-            font-size: 1.1rem; 
-            font-weight: 600; 
-            border: 2px solid var(--primary-red); 
-            border-radius: 12px; 
-            background: white; 
-            color: var(--primary-red); 
-            cursor: pointer; 
-            transition: 0.3s; 
-            line-height: 1.4;
-        }
-        .menu-btn:hover { background: var(--primary-red); color: white; transform: translateY(-3px); }
-        
-        .hidden { display: none; }
-        
-        .form-header { 
-            position: relative;
-            margin-bottom: 30px; 
-            padding-bottom: 15px; 
-            border-bottom: 1px solid #eee;
-        }
-        .back-btn { 
-            position: absolute; left: 0; top: 0;
-            background: #eee; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; 
-        }
-        .form-title { color: var(--primary-red); font-size: 1.3rem; font-weight: 600; margin: 0; }
-        
-        .form-group { 
-            margin-bottom: 35px; padding: 20px; background: #fcfcfc; border-radius: 12px; border: 1px solid #f0f0f0; text-align: center;
-        }
+        .form-title { color: var(--primary-red); font-size: 1.3rem; font-weight: 600; margin-bottom: 25px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        .form-group { margin-bottom: 35px; padding: 20px; background: #fcfcfc; border-radius: 12px; border: 1px solid #f0f0f0; text-align: center; }
         label { display: block; margin-bottom: 15px; font-weight: 600; font-size: 1rem; line-height: 1.5; color: #333; }
-        
-        input[type="text"], select { 
-            width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; text-align: center; text-align-last: center;
-        }
-        
-        textarea { 
-            width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.9rem; height: 80px; margin-top: 15px; background: #fff; text-align: center;
-        }
-
+        input[type="text"] { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; text-align: center; }
+        textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.9rem; height: 80px; margin-top: 15px; background: #fff; text-align: center; }
         .score-row { display: flex; justify-content: center; gap: 12px; margin: 15px 0; }
-        .score-btn { 
-            width: 50px; height: 50px; border: 1px solid #ddd; background: white; border-radius: 10px; font-size: 1.3rem; font-weight: 600; color: #666; cursor: pointer; transition: 0.2s; 
-        }
+        .score-btn { width: 50px; height: 50px; border: 1px solid #ddd; background: white; border-radius: 10px; font-size: 1.3rem; font-weight: 600; color: #666; cursor: pointer; transition: 0.2s; }
         .score-btn:hover { border-color: var(--primary-red); color: var(--primary-red); }
         .score-btn.active { background: var(--primary-red); color: white; border-color: var(--primary-red); box-shadow: 0 4px 10px rgba(227, 6, 19, 0.3); }
-        
         .legend { display: flex; justify-content: space-between; font-size: 0.8rem; color: #999; max-width: 300px; margin: 0 auto; }
-
-        .submit-btn { 
-            width: 100%; padding: 18px; background: var(--primary-red); color: white; border: none; border-radius: 12px; font-size: 1.2rem; font-weight: 600; cursor: pointer; margin-top: 10px; box-shadow: 0 6px 15px rgba(227, 6, 19, 0.2); 
-        }
-        .submit-btn:hover { background: #b3050f; transform: translateY(-2px); }
+        .submit-btn { width: 100%; padding: 18px; background: var(--primary-red); color: white; border: none; border-radius: 12px; font-size: 1.2rem; font-weight: 600; cursor: pointer; margin-top: 10px; box-shadow: 0 6px 15px rgba(227, 6, 19, 0.2); }
     </style>
 </head>
 <body>
-
 <div class="container">
-    <div class="logo-section"><img id="mainLogo" src="https://i.ibb.co/2xYmDGM/logo-square.jpg" alt="Logo"></div>
-    <div id="compName" class="company-title">DataCube</div>
+    <div class="logo-section"><img src="https://i.ibb.co/2xYmDGM/logo-square.jpg" alt="Logo"></div>
+    <div class="company-title">DataCube</div>
     <div class="team-title">ระบบประเมินผลการดำเนินงาน ทีม COE Data</div>
+    <div class="form-title">แบบประเมินตนเอง (Self-Evaluation)</div>
 
-    <!-- หน้าแรก -->
-    <div id="landingPage" class="landing-menu">
-        <button class="menu-btn" onclick="startApp('self')">ประเมินผลงานภายในทีม<br>(Self-Evaluation)</button>
-        <button class="menu-btn" onclick="startApp('client')">ลูกค้าประเมินความพึงพอใจ<br>(Client Evaluation)</button>
-    </div>
-
-    <!-- หน้าฟอร์ม -->
-    <div id="formPage" class="hidden">
-        <div class="form-header">
-            <button class="back-btn" onclick="goHome()">ย้อนกลับ</button>
-            <h3 id="formTitle" class="form-title"></h3>
+    <form id="evalForm">
+        <div class="form-group" style="background: #fff8f8; border-color: #ffe0e0;">
+            <label>ชื่อ-นามสกุล ของท่าน (พนักงาน)</label>
+            <input type="text" id="evaluatorName" placeholder="ระบุชื่อ-นามสกุล ของท่าน" required>
         </div>
-
-        <form id="evalForm">
-            <!-- ส่วนข้อมูลผู้ประเมิน (ปรับเปลี่ยนตามโหมด) -->
-            <div id="evaluatorArea" class="form-group" style="background: #fff8f8; border-color: #ffe0e0;">
-                <!-- จะถูกเติมด้วย JavaScript -->
-            </div>
-
-            <div id="questionArea"></div>
-
-            <button type="submit" class="submit-btn">ส่งผลการประเมิน</button>
-        </form>
-    </div>
+        <div id="questionArea"></div>
+        <button type="submit" class="submit-btn">ส่งผลการประเมิน</button>
+    </form>
 </div>
 
 <script>
     const scriptURL = 'https://script.google.com/macros/s/AKfycbwhQyaD82Ywe54ewtNM5ZIfRp0umB54N-5CYorvMoxAXUW_TuxO_MXS1YsqbSDVuqSA/exec';
-    let currentMode = '';
+    const questions = ["ระดับความเข้าใจเป้าหมายทีม", "ประสิทธิภาพจัดการเวลา", "ความถูกต้องของข้อมูล", "ความราบรื่นในทีม", "ความพร้อมเครื่องมือ", "ความสามารถแก้ปัญหา", "การสร้าง Value ให้ธุรกิจ", "ความพึงพอใจบรรยากาศทีม"];
 
-    const questions = {
-        self: ["ระดับความเข้าใจเป้าหมายทีม", "ประสิทธิภาพจัดการเวลา", "ความถูกต้องของข้อมูล", "ความราบรื่นในทีม", "ความพร้อมเครื่องมือ", "ความสามารถแก้ปัญหา", "การสร้าง Value ให้ธุรกิจ", "ความพึงพอใจบรรยากาศทีม"],
-        client: ["ความเข้าใจโจทย์ธุรกิจ", "ความรวดเร็วในการส่งมอบ", "ความถูกต้องแม่นยำของงาน", "การสื่อสารเข้าใจง่าย", "ความเป็นมืออาชีพของทีม", "คำแนะนำที่มีประโยชน์", "ความคุ้มค่าของผลลัพธ์", "ระดับความพึงพอใจโดยรวม"]
-    };
+    const qArea = document.getElementById('questionArea');
+    questions.forEach((q, i) => {
+        let n = i + 1;
+        qArea.innerHTML += `<div class="form-group"><label>${n}. ${q}</label><div class="score-row">${[1,2,3,4,5].map(v => `<button type="button" class="score-btn" onclick="setS(${n},${v})" id="q${n}_${v}">${v}</button>`).join('')}</div><div class="legend"><span>น้อยสุด</span><span>มากสุด</span></div><input type="hidden" id="q${n}_s" required><textarea id="q${n}_t" placeholder="ข้อเสนอแนะเพิ่มเติม..."></textarea></div>`;
+    });
 
-    function startApp(mode) {
-        currentMode = mode;
-        document.getElementById('landingPage').classList.add('hidden');
-        document.getElementById('formPage').classList.remove('hidden');
-        document.getElementById('formTitle').innerText = mode === 'self' ? 'ประเมินตนเอง' : 'ลูกค้าประเมินทีม';
-        
-        // จัดการส่วนหัวข้อผู้ประเมิน
-        const evalArea = document.getElementById('evaluatorArea');
-        if (mode === 'self') {
-            evalArea.innerHTML = `
-                <label>ชื่อ-นามสกุล ของท่าน</label>
-                <input type="text" id="evaluatorInput" placeholder="ระบุชื่อ-นามสกุล ของท่าน" required>`;
-        } else {
-            evalArea.innerHTML = `
-                <label>แผนก / บริษัท ของท่าน (BU)</label>
-                <select id="evaluatorInput" required>
-                    <option value="">-- กรุณาเลือก BU --</option>
-                    <option value="Jaymart Mobile (JMB)">Jaymart Mobile (JMB)</option>
-                    <option value="JElite (JPoint)">JElite (JPoint)</option>
-                    <option value="Brewing Happiness (BH)">Brewing Happiness (BH)</option>
-                    <option value="JAS Asset (JAS)">JAS Asset (JAS)</option>
-                    <option value="SG Capital (SGC)">SG Capital (SGC)</option>
-                    <option value="Rawmat Coffee (RMC)">Rawmat Coffee (RMC)</option>
-                    <option value="CEO Business (Gen II)">CEO Business (Gen II)</option>
-                    <option value="Jaymart Holding (JMH)">Jaymart Holding (JMH)</option>
-                </select>`;
-        }
-        
-        const qArea = document.getElementById('questionArea');
-        qArea.innerHTML = '';
-        questions[mode].forEach((q, i) => {
-            let qNum = i + 1;
-            qArea.innerHTML += `
-                <div class="form-group">
-                    <label>${qNum}. ${q}</label>
-                    <div class="score-row">
-                        ${[1,2,3,4,5].map(n => `<button type="button" class="score-btn" onclick="setScore(${qNum}, ${n})" id="q${qNum}_${n}">${n}</button>`).join('')}
-                    </div>
-                    <div class="legend"><span>น้อยที่สุด</span><span>มากที่สุด</span></div>
-                    <input type="hidden" id="q${qNum}_score" required>
-                    <textarea id="q${qNum}_note" placeholder="ข้อเสนอแนะเพิ่มเติม..."></textarea>
-                </div>`;
-        });
-        window.scrollTo(0, 0);
-    }
-
-    function setScore(qNum, score) {
-        for(let i=1; i<=5; i++) document.getElementById(`q${qNum}_${i}`).classList.remove('active');
-        document.getElementById(`q${qNum}_${score}`).classList.add('active');
-        document.getElementById(`q${qNum}_score`).value = score;
-    }
-
-    function goHome() {
-        document.getElementById('landingPage').classList.remove('hidden');
-        document.getElementById('formPage').classList.add('hidden');
+    function setS(q, v) { 
+        for(let i=1;i<=5;i++) document.getElementById(`q${q}_${i}`).classList.remove('active');
+        document.getElementById(`q${q}_${v}`).classList.add('active');
+        document.getElementById(`q${q}_s`).value = v;
     }
 
     document.getElementById('evalForm').addEventListener('submit', e => {
         e.preventDefault();
-        for(let i=1; i<=8; i++) {
-            if(!document.getElementById(`q${i}_score`).value) {
-                Swal.fire('ข้อมูลไม่ครบ', `กรุณาให้คะแนนข้อที่ ${i}`, 'warning');
-                return;
-            }
-        }
-        Swal.fire({ title: 'กำลังส่งข้อมูล...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-        const body = {
-            action: "saveEval",
-            type: currentMode,
-            bu: document.getElementById('evaluatorInput').value, // ดึงค่าจากทั้ง input หรือ select
-            target: "ทีม COE Data"
-        };
-        for(let i=1; i<=8; i++) {
-            body[`q${i}_score`] = document.getElementById(`q${i}_score`).value;
-            body[`q${i}_note`] = document.getElementById(`q${i}_note`).value;
-        }
-        fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(body) })
-        .then(() => {
-            Swal.fire({ icon: 'success', title: 'บันทึกสำเร็จ!', text: 'ขอบคุณที่ร่วมพัฒนาทีมครับ' })
-            .then(() => location.reload());
-        });
+        for(let i=1;i<=8;i++) if(!document.getElementById(`q${i}_s`).value) return Swal.fire('ไม่ครบ','กรุณาให้คะแนนข้อ '+i,'warning');
+        Swal.fire({title:'กำลังส่ง...',didOpen:()=>Swal.showLoading()});
+        const body = { action:"saveEval", type:"self", bu:document.getElementById('evaluatorName').value, target:"ทีม COE Data" };
+        for(let i=1;i<=8;i++){ body[`q${i}_score`]=document.getElementById(`q${i}_s`).value; body[`q${i}_note`]=document.getElementById(`q${i}_t`).value; }
+        fetch(scriptURL,{method:'POST',mode:'no-cors',body:JSON.stringify(body)}).then(()=>Swal.fire('สำเร็จ!','ขอบคุณครับ','success').then(()=>location.reload()));
     });
 </script>
 </body>
